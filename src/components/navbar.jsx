@@ -16,33 +16,20 @@ const Navbar = ({ onSearch }) => {
   };
 
   return (
-    <nav
-      style={{
-        justifyContent: "space-between",
-        display: "flex",
-        alignItems: "center",
-        marginTop: "10px",
-        padding: "10px",
-        paddingLeft: '30px',
-        paddingRight: '30px'
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+    <nav className="navbar">
+      <div className="navbar-logo">
         <FilterDramaTwoToneIcon />
-        <p style={{ fontWeight: "bold", fontSize: "20px" }}>Weather</p>
+        <p className="navbar-title">Weather</p>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+
+      <div className="navbar-search">
         <TextField
           variant="outlined"
           placeholder="Search city 'London'"
           size="small"
           value={searchCity}
           onChange={(e) => setSearchCity(e.target.value)}
-          style={{
-            backgroundColor: "white",
-            borderRadius: "2rem",
-            width: "22rem",
-          }}
+          className="navbar-input"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -51,31 +38,14 @@ const Navbar = ({ onSearch }) => {
             ),
           }}
         />
-        <Button
-          variant="contained"
-          onClick={handleSearchClick}
-          style={{ borderRadius: "6px" ,backgroundColor: '#4B5550'}}
-        >
+        <Button variant="contained" onClick={handleSearchClick} className="navbar-button">
           Search
         </Button>
       </div>
-      <div style={{ marginTop: "1rem",
-                  fontSize: "16px",
-                  fontWeight: "700",
-                  backgroundColor: '#4B5550',
-                  height: "35px",
-                  width: "150px",
-                  color:'white',
-                  gap:'2px',
-                  borderRadius: "6px",
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "center",}}>
+
+      <div className="navbar-location">
         <GpsFixedIcon />
-        <p style={{
-                  fontSize:
-                  '14px'
-                }}>Current Location</p>
+        <p className="location-text">Current Location</p>
       </div>
     </nav>
   );

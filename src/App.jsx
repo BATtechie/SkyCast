@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import './App.css';
 import Navbar from "../src/components/navbar";
 import MainWeatherCard from "../src/components/mainweathercard";
 import FiveDayForecast from "../src/components/fiveday";
@@ -53,16 +54,15 @@ const WeatherDashboard = () => {
   return (
     <div>
       <Navbar onSearch={handleSearch} />
-      {weatherData && airQualityData &&  (
-        <div style={{ display: "flex", padding: "30px", gap: "20px" }}>
-          <div style={{ flex: "1", marginRight: "10px" }}>
+      {weatherData && airQualityData && (
+        <div className="dashboard-container">
+          <div className="main-section">
             <MainWeatherCard weatherData={weatherData} />
-            <p style={{ fontWeight: "700", fontSize: "20px", marginTop: "20px" }}>5 Days Forecast</p>
+            <p className="forecast-heading">5 Days Forecast</p>
             {fiveDayForecast && <FiveDayForecast forecastData={fiveDayForecast} />}
           </div>
-          <div style={{ display: "flex", flexDirection: "column", flex: "0.5", gap: "20px" }}>
-            <TodayHighlights weatherData={weatherData} airQualityData={airQualityData}  />
-            
+          <div className="sidebar-section">
+            <TodayHighlights weatherData={weatherData} airQualityData={airQualityData} />
           </div>
         </div>
       )}
