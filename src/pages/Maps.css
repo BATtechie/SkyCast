@@ -1,0 +1,137 @@
+.maps-wrapper {
+  padding: 48px 0;
+  background-color: #000;
+  min-height: 100vh;
+}
+
+.maps-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  position: relative;
+}
+
+.maps-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.maps-header h2 {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.map-area {
+  position: relative;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 600px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 0;
+}
+
+/* Panel base styling */
+.panel {
+  position: absolute;
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  padding: 16px;
+  color: #fff;
+  font-size: 14px;
+  z-index: 1000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Specific positions */
+.map-controls {
+  top: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.weather-layers {
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.location-info {
+  bottom: 24px;
+  left: 24px;
+}
+
+.coords-info {
+  bottom: 24px;
+  right: 24px;
+}
+
+/* Buttons */
+.panel button {
+  background: rgba(20, 20, 20, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.panel button:hover {
+  background: rgba(40, 40, 40, 0.8);
+}
+
+.panel button.active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #fff;
+  font-weight: 600;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+  .panel {
+    font-size: 12px;
+    padding: 12px;
+  }
+
+  .leaflet-map {
+    height: 400px;
+  }
+
+  .map-controls,
+  .weather-layers,
+  .location-info,
+  .coords-info {
+    position: static;
+    margin-bottom: 16px;
+  }
+
+  .map-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
