@@ -24,11 +24,13 @@ const Dashboard = () => {
   const [uvIndex, setUvIndex] = useState<number | null>(null);
   const [hourlyForecast, setHourlyForecast] = useState<any[]>([]);
   const [fiveDayForecast, setFiveDayForecast] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchDefaultCity = async () => {
     try {
       const data = await fetchWeatherByCity("New Delhi");
       setWeather(data);
+      setError(null);
 
       const { lat, lon } = data.coord;
 
@@ -45,6 +47,7 @@ const Dashboard = () => {
       setFiveDayForecast(fiveDayData);
     } catch (err) {
       console.error("Failed to fetch default city weather:", err);
+      setError("City not found. Please enter a valid city name.");
     }
   };
 
@@ -95,6 +98,35 @@ const Dashboard = () => {
             Search
           </button>
         </div>
+
+        {error && (
+          <div
+            style={{
+              backgroundColor: "#ffe5e5",
+              color: "#d32f2f",
+              border: "1px solid #f5c6cb",
+              padding: "12px",
+              borderRadius: "6px",
+              marginTop: "12px",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        {!weather && !error && (
+          <div
+            style={{
+              color: "#999",
+              padding: "20px",
+              textAlign: "center",
+              marginTop: "12px",
+            }}
+          >
+            🌤️ Weather data not available. Please search for a city to begin.
+          </div>
+        )}
 
         {/* Current Weather Card */}
         {weather && (
@@ -227,29 +259,78 @@ const Dashboard = () => {
           </div>
 
           {/* UV Index Card */}
+          {/* UV Index Card */}
           <div className="uv-index-card">
             <div className="uv-header">
               <span>⚠️ UV Index</span>
-              <span className="uv-badge">Very High</span>
+              <span
+                className="uv-badge"
+                style={{
+                  backgroundColor:
+                    uvIndex === null
+                      ? "#ccc"
+                      : uvIndex >= 8
+                      ? "#d32f2f"
+                      : uvIndex >= 6
+                      ? "#f57c00"
+                      : uvIndex >= 3
+                      ? "#fbc02d"
+                      : "#388e3c",
+                  color: "#fff",
+                  padding: "4px 8px",
+                  borderRadius: "5px",
+                  marginLeft: "8px",
+                }}
+              >
+                {uvIndex === null
+                  ? "Unknown"
+                  : uvIndex >= 8
+                  ? "Very High"
+                  : uvIndex >= 6
+                  ? "High"
+                  : uvIndex >= 3
+                  ? "Moderate"
+                  : "Low"}
+              </span>
             </div>
-            <div className="uv-value">8</div>
+
+            <div className="uv-value">{uvIndex !== null ? uvIndex : "--"}</div>
+
             <div className="uv-label">Current UV Index</div>
+
             <div className="uv-scale">
               <div className="uv-gradient">
-                <div className="uv-dot" style={{ left: "70%" }}></div>
+                <div
+                  className="uv-dot"
+                  style={{
+                    left:
+                      uvIndex !== null
+                        ? `${Math.min((uvIndex / 11) * 100, 100)}%`
+                        : "0%",
+                  }}
+                ></div>
               </div>
               <div className="uv-scale-labels">
                 <span>0</span>
                 <span>11+</span>
               </div>
             </div>
+
             <div className="uv-advice">
               <strong>🛡️ Protection Advice</strong>
               <p>
-                Avoid going out during midday. Use SPF 30+ and protective
-                clothing.
+                {uvIndex === null
+                  ? "UV Index not available."
+                  : uvIndex >= 8
+                  ? "Avoid being outside during midday hours. Use SPF 30+ sunscreen, wear protective clothing, and sunglasses."
+                  : uvIndex >= 6
+                  ? "Reduce time in the sun between 10 a.m. and 4 p.m. Use SPF 30+ and wear a hat and sunglasses."
+                  : uvIndex >= 3
+                  ? "Wear sunglasses and SPF if outside for extended time."
+                  : "Low risk from UV rays for the average person."}
               </p>
             </div>
+
             <div className="uv-levels">
               <span className="uv-level low">
                 0–2
@@ -257,14 +338,24 @@ const Dashboard = () => {
                 Low
               </span>
               <span className="uv-level moderate">
-                3–7
+                3–5
                 <br />
                 Moderate
               </span>
               <span className="uv-level high">
-                8–11+
+                6–7
                 <br />
                 High
+              </span>
+              <span className="uv-level very-high">
+                8–10
+                <br />
+                Very High
+              </span>
+              <span className="uv-level extreme">
+                11+
+                <br />
+                Extreme
               </span>
             </div>
           </div>

@@ -45,14 +45,14 @@ export const fetchAQIByCoords = async (lat: number, lon: number) => {
 
 //   return Math.round(uv);
 // }; 
-export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
-  const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch UV Index");
-  const data = await res.json();
-  return data.value; // UV index value
-};
+// export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
+//   const res = await fetch(
+//     `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+//   );
+//   if (!res.ok) throw new Error("Failed to fetch UV Index");
+//   const data = await res.json();
+//   return data.value; // UV index value
+// };
 
 export const fetchHourlyForecast = async (lat: number, lon: number) => {
   const res = await fetch(
@@ -116,6 +116,20 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
       wind: Math.round(winds.reduce((a, b) => a + b, 0) / winds.length),
     };
   });
+};
+
+export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=uv_index&timezone=auto`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch UV index");
+  const data = await res.json();
+
+  const currentHour = new Date().toISOString().slice(0, 13); // e.g., "2025-07-16T14"
+  const uvIndexList = data?.hourly?.uv_index ?? [];
+  const timeList = data?.hourly?.time ?? [];
+
+  const index = timeList.findIndex((time: string) => time.startsWith(currentHour));
+  return index !== -1 ? uvIndexList[index] : null;
 };
 
 
