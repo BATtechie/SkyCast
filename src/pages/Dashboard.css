@@ -500,6 +500,17 @@ body {
   border: 1px solid rgb(220, 38, 38, 0.4);
 }
 
+.uv-level.very-high {
+  background: #c026d322;      
+  border: 1px solid rgba(192, 38, 211, 0.4);
+  color: rgb(192, 38, 211);           
+}
+
+.uv-level.extreme {
+  background: #6b21a822;              
+  border: 1px solid rgba(107, 33, 168, 0.4);
+  color: rgb(107, 33, 168);            
+}
 /* Responsive */
 @media (max-width: 768px) {
   .weather-bottom-section {

@@ -1,7 +1,8 @@
+/* ============ Page Structure ============ */
 .maps-wrapper {
-  padding: 48px 0;
   background-color: #000;
   min-height: 100vh;
+  padding: 48px 0;
 }
 
 .maps-container {
@@ -14,6 +15,7 @@
   position: relative;
 }
 
+/* ============ Header ============ */
 .maps-header {
   display: flex;
   align-items: center;
@@ -24,7 +26,17 @@
   color: #fff;
   font-size: 24px;
   font-weight: 600;
+  margin: 0;
 }
+.map-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
 
 .dot {
   width: 10px;
@@ -34,104 +46,78 @@
   box-shadow: 0 0 8px #22c55e;
 }
 
-.map-area {
-  position: relative;
-}
-
-.leaflet-map {
+/* ============ Leaflet Map ============ */
+.leaflet-container {
   width: 100%;
   height: 600px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.4);
+  margin-top: 16px;
+  z-index: 1;
 }
 
-/* Panel base styling */
-.panel {
+/* ============ Weather Layer Panel ============ */
+.panel.weather-layers {
   position: absolute;
+  top: 24px;
+  right: 24px;
   background: rgba(10, 10, 10, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px); 
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 16px;
-  color: #fff;
-  font-size: 14px;
-  z-index: 1000;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-}
-
-/* Specific positions */
-.map-controls {
-  top: 24px;
-  left: 24px;
-  display: flex;
+  padding: 16px; 
+  z-index: 1000; 
+  display: flex; 
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-.weather-layers {
-  top: 24px;
-  right: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.location-info {
-  bottom: 24px;
-  left: 24px;
-}
-
-.coords-info {
-  bottom: 24px;
-  right: 24px;
-}
-
-/* Buttons */
-.panel button {
-  background: rgba(20, 20, 20, 0.7);
+/* ============ Weather Layer Buttons ============ */
+.panel.weather-layers button {
+  background: rgba(20, 20, 20, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   color: #fff;
   padding: 8px 12px;
-  cursor: pointer;
   font-size: 13px;
+  cursor: pointer;
   transition: all 0.2s ease;
+  text-align: left;
+  min-width: 130px;
+  text-align: center;
 }
 
-.panel button:hover {
-  background: rgba(40, 40, 40, 0.8);
+.panel.weather-layers button:hover {
+  background: rgba(40, 40, 40, 0.95);
 }
 
-.panel button.active {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  color: #fff;
+.panel.weather-layers button.active {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
   font-weight: 600;
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Responsive fixes */
+/* ============ Responsive Layout ============ */
 @media (max-width: 768px) {
-  .panel {
-    font-size: 12px;
+  .maps-header h2 {
+    font-size: 20px;
+  }
+
+  .panel.weather-layers {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
     padding: 12px;
   }
 
-  .leaflet-map {
+  .leaflet-container {
     height: 400px;
-  }
-
-  .map-controls,
-  .weather-layers,
-  .location-info,
-  .coords-info {
-    position: static;
-    margin-bottom: 16px;
-  }
-
-  .map-area {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
   }
 }

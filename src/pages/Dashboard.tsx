@@ -16,14 +16,48 @@ import {
   MapPin,
   CalendarDaysIcon,
 } from "lucide-react";
+// types.ts
+export interface WeatherData {
+  name: string;
+  sys: { country: string };
+  main: {
+    temp: number;
+    feels_like: number;
+    humidity: number;
+    pressure: number;
+  };
+  weather: { description: string; icon: string }[];
+  wind: { speed: number };
+  visibility: number;
+  coord: { lat: number; lon: number };
+}
+
+export interface HourForecast {
+  dt: number;
+  main: { temp: number; feels_like: number; humidity: number; pressure: number };
+  weather: { description: string; icon: string }[];
+  wind: { speed: number };
+  visibility: number;
+}
+
+export interface FiveDayForecastItem {
+  date: string;
+  icon: string;
+  description: string;
+  humidity: number;
+  wind: number;
+  feels_like: number;
+  temp_min: number;
+  temp_max: number;
+}
 
 const Dashboard = () => {
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<WeatherData| null>(null);
   const [city, setCity] = useState("");
   const [aqi, setAqi] = useState<number | null>(null);
   const [uvIndex, setUvIndex] = useState<number | null>(null);
-  const [hourlyForecast, setHourlyForecast] = useState<any[]>([]);
-  const [fiveDayForecast, setFiveDayForecast] = useState<any[]>([]);
+  const [hourlyForecast, setHourlyForecast] = useState<HourForecast[]>([]);
+  const [fiveDayForecast, setFiveDayForecast] = useState<FiveDayForecastItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchDefaultCity = async () => {
@@ -257,105 +291,105 @@ const Dashboard = () => {
               </div>
             )}
           </div>
-
-          {/* UV Index Card */}
+ 
           {/* UV Index Card */}
           <div className="uv-index-card">
             <div className="uv-header">
-              <span>⚠️ UV Index</span>
+              <span>🌫️ Air Quality Index</span>
               <span
                 className="uv-badge"
                 style={{
                   backgroundColor:
-                    uvIndex === null
-                      ? "#ccc"
-                      : uvIndex >= 8
-                      ? "#d32f2f"
-                      : uvIndex >= 6
-                      ? "#f57c00"
-                      : uvIndex >= 3
-                      ? "#fbc02d"
-                      : "#388e3c",
+                    aqi === 1
+                      ? "#4caf50"
+                      : aqi === 2
+                      ? "#cddc39"
+                      : aqi === 3
+                      ? "#ff9800"
+                      : aqi === 4
+                      ? "#f44336"
+                      : "#9c27b0",
                   color: "#fff",
                   padding: "4px 8px",
                   borderRadius: "5px",
                   marginLeft: "8px",
                 }}
               >
-                {uvIndex === null
-                  ? "Unknown"
-                  : uvIndex >= 8
-                  ? "Very High"
-                  : uvIndex >= 6
-                  ? "High"
-                  : uvIndex >= 3
+                {aqi === 1
+                  ? "Good"
+                  : aqi === 2
+                  ? "Fair"
+                  : aqi === 3
                   ? "Moderate"
-                  : "Low"}
+                  : aqi === 4
+                  ? "Poor"
+                  : aqi === 5
+                  ? "Very Poor"
+                  : "Unknown"}
               </span>
             </div>
 
-            <div className="uv-value">{uvIndex !== null ? uvIndex : "--"}</div>
+            <div className="uv-value">{aqi !== null ? aqi : "--"}</div>
 
-            <div className="uv-label">Current UV Index</div>
+            <div className="uv-label">Current AQI Level</div>
 
             <div className="uv-scale">
               <div className="uv-gradient">
                 <div
                   className="uv-dot"
                   style={{
-                    left:
-                      uvIndex !== null
-                        ? `${Math.min((uvIndex / 11) * 100, 100)}%`
-                        : "0%",
+                    left: aqi !== null ? `${((aqi - 1) / 4) * 100}%` : "0%",
                   }}
                 ></div>
               </div>
               <div className="uv-scale-labels">
-                <span>0</span>
-                <span>11+</span>
+                <span>1</span>
+                <span>5</span>
               </div>
             </div>
 
             <div className="uv-advice">
-              <strong>🛡️ Protection Advice</strong>
+              <strong>🧠 AQI Info</strong>
               <p>
-                {uvIndex === null
-                  ? "UV Index not available."
-                  : uvIndex >= 8
-                  ? "Avoid being outside during midday hours. Use SPF 30+ sunscreen, wear protective clothing, and sunglasses."
-                  : uvIndex >= 6
-                  ? "Reduce time in the sun between 10 a.m. and 4 p.m. Use SPF 30+ and wear a hat and sunglasses."
-                  : uvIndex >= 3
-                  ? "Wear sunglasses and SPF if outside for extended time."
-                  : "Low risk from UV rays for the average person."}
+                {aqi === null
+                  ? "Air quality data not available."
+                  : aqi === 1
+                  ? "Air quality is considered satisfactory, and air pollution poses little or no risk."
+                  : aqi === 2
+                  ? "Air quality is acceptable; however, some pollutants may slightly affect very sensitive individuals."
+                  : aqi === 3
+                  ? "Sensitive individuals should consider limiting prolonged outdoor exertion."
+                  : aqi === 4
+                  ? "Everyone may begin to experience health effects; sensitive groups may experience more serious effects."
+                  : "Health warnings of emergency conditions. Everyone may experience more serious health effects."}
               </p>
             </div>
 
             <div className="uv-levels">
               <span className="uv-level low">
-                0–2
+                1
                 <br />
-                Low
+                Good
               </span>
               <span className="uv-level moderate">
-                3–5
+                2
+                <br />
+                Fair
+              </span>
+              <span className="uv-level high">
+                3
                 <br />
                 Moderate
               </span>
-              <span className="uv-level high">
-                6–7
-                <br />
-                High
-              </span>
               <span className="uv-level very-high">
-                8–10
+                4
                 <br />
-                Very High
+                Poor
               </span>
               <span className="uv-level extreme">
-                11+
+                5
                 <br />
-                Extreme
+                Very Poor
               </span>
             </div>
           </div>
