@@ -14,7 +14,7 @@ const Navbar = () => {
   { path: "/dashboard", label: "Dashboard", icon: "☁️" },
   { path: "/alerts", label: "Alerts", icon: "🔔" },
   { path: "/maps", label: "Maps", icon: "🗺️" },
-  { path: "/auth", label: "Account", icon: "👤" },
+  { path: "/signin", label: "Account", icon: "👤" },
 ];
   const location = useLocation();
 

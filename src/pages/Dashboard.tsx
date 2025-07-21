@@ -15,6 +15,7 @@ import {
   WindArrowDown,
   MapPin,
   CalendarDaysIcon,
+  Shirt,
 } from "lucide-react";
 // types.ts
 export interface WeatherData {
@@ -34,7 +35,12 @@ export interface WeatherData {
 
 export interface HourForecast {
   dt: number;
-  main: { temp: number; feels_like: number; humidity: number; pressure: number };
+  main: {
+    temp: number;
+    feels_like: number;
+    humidity: number;
+    pressure: number;
+  };
   weather: { description: string; icon: string }[];
   wind: { speed: number };
   visibility: number;
@@ -52,13 +58,49 @@ export interface FiveDayForecastItem {
 }
 
 const Dashboard = () => {
-  const [weather, setWeather] = useState<WeatherData| null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [city, setCity] = useState("");
   const [aqi, setAqi] = useState<number | null>(null);
   const [uvIndex, setUvIndex] = useState<number | null>(null);
   const [hourlyForecast, setHourlyForecast] = useState<HourForecast[]>([]);
-  const [fiveDayForecast, setFiveDayForecast] = useState<FiveDayForecastItem[]>([]);
+  const [fiveDayForecast, setFiveDayForecast] = useState<FiveDayForecastItem[]>(
+    []
+  );
   const [error, setError] = useState<string | null>(null);
+
+  const getClothingRecommendation = () => {
+    if (!weather) return null;
+
+    const temp = Math.round(weather.main.feels_like);
+    const desc = weather.weather[0].description.toLowerCase();
+    // const wind = weather.wind.speed;
+
+    if (temp <= 5) {
+      return desc.includes("rain") || desc.includes("snow")
+        ? "🧥 Wear a heavy coat, boots & carry an umbrella."
+        : "🧥 It's freezing! Bundle up with a heavy coat.";
+    }
+
+    if (temp > 5 && temp <= 15) {
+      return desc.includes("rain")
+        ? "🌧️ Light jacket + umbrella suggested."
+        : "🧥 Chilly – wear a light jacket.";
+    }
+
+    if (temp > 15 && temp <= 25) {
+      return desc.includes("rain")
+        ? "🌦️ T-shirt is fine, but carry an umbrella."
+        : "👕 Pleasant weather – T-shirt & jeans recommended.";
+    }
+
+    if (temp > 25) {
+      return desc.includes("clear")
+        ? "☀️ Hot day – wear breathable clothes, drink water."
+        : "🔥 Stay cool – light clothes & hydration recommended.";
+    }
+
+    return "👚 Dress according to conditions.";
+  };
 
   const fetchDefaultCity = async () => {
     try {
@@ -291,7 +333,7 @@ const Dashboard = () => {
               </div>
             )}
           </div>
- 
+
           {/* UV Index Card */}
           <div className="uv-index-card">
             <div className="uv-header">
@@ -394,6 +436,13 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        {weather && (
+          <div className="clothing-recommendation">
+            <h3><span><Shirt style={{ color: "#9c8814ff" }}/></span> Clothing Recommendation</h3>
+            <p>{getClothingRecommendation()}</p>
+          </div>
+        )}
 
         {/* 5-Day Forecast Card */}
         <div className="seven-day-forecast-card">
