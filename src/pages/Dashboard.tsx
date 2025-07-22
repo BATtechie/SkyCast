@@ -229,7 +229,14 @@ const Dashboard = () => {
             </div>
 
             <div className="weather-main">
-              <div className="weather-icon">⛅</div>
+              <div className="weather-icon">
+                <img
+                  src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                  alt={weather.weather[0].description}
+                  className="weather-icon-image"
+                />
+              </div>
+
               <div className="temperature">
                 {Math.round(weather.main.temp)}°
               </div>
@@ -439,7 +446,12 @@ const Dashboard = () => {
 
         {weather && (
           <div className="clothing-recommendation">
-            <h3><span><Shirt style={{ color: "#9c8814ff" }}/></span> Clothing Recommendation</h3>
+            <h3>
+              <span>
+                <Shirt style={{ color: "#9c8814ff" }} />
+              </span>{" "}
+              Clothing Recommendation
+            </h3>
             <p>{getClothingRecommendation()}</p>
           </div>
         )}

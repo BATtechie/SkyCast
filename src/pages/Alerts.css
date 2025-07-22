@@ -1,0 +1,27 @@
+.alerts-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.alert-box {
+  background-color: #fff3cd;
+  border-left: 6px solid #ffa502;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.error {
+  color: #d32f2f;
+  background: #ffe5e5;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.no-alerts {
+  text-align: center;
+  color: #777;
+  margin-top: 30px;
+}

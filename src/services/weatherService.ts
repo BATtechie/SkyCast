@@ -25,6 +25,15 @@ export const fetchAQIByCoords = async (lat: number, lon: number) => {
   const data = await res.json();
   return data.list[0].main.aqi; // AQI is 1–5 scale
 };
+export async function fetchWeatherAlerts(lat: number, lon: number) {
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,daily&appid=${API_KEY}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch weather alerts");
+  const data = await res.json();
+  return data.alerts || [];
+}
+
 
 // export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
 //   const res = await fetch(
