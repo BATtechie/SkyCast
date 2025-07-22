@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "./SignIn.css";
 import { Eye, EyeClosed } from "lucide-react";
+import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,6 +14,10 @@ const SignIn = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLogin && confirmPassword) {
@@ -20,6 +26,46 @@ const SignIn = () => {
       setPasswordMismatch(false);
     }
   }, [password, confirmPassword, isLogin]);
+
+  const handleSubmit = async () => {
+    setAuthError("");
+    setLoading(true);
+
+    if (isLogin) {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        setAuthError(error.message);
+      } else {
+        navigate("/dashboard"); // redirect on success
+      }
+    } else {
+      if (passwordMismatch || !isEmailValid) return;
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName },
+        },
+      });
+
+      if (error) {
+        setAuthError(error.message);
+      } else {
+        alert("Check your email for verification link.");
+        setIsLogin(true);
+        setFullName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      }
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div className="signin-container">
@@ -70,7 +116,7 @@ const SignIn = () => {
               setEmail(value);
 
               if (value.trim() === "") {
-                setIsEmailValid(true); 
+                setIsEmailValid(true);
               } else {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 setIsEmailValid(emailRegex.test(value));
@@ -86,7 +132,7 @@ const SignIn = () => {
           <label>Password</label>
           <input
             type={showPassword ? "text" : "password"}
-            placeholder={isLogin ? "Enter your password" : "Create a password"}
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -120,12 +166,18 @@ const SignIn = () => {
         {passwordMismatch && (
           <p className="warning-text">Passwords do not match</p>
         )}
+        {authError && <p className="warning-text">{authError}</p>}
 
         <button
           className="signin-submit"
-          disabled={!isLogin && (passwordMismatch || !isEmailValid)}
+          disabled={loading || (!isLogin && (passwordMismatch || !isEmailValid))}
+          onClick={handleSubmit}
         >
-          {isLogin ? "Sign In" : "Sign Up"}
+          {loading
+            ? "Processing..."
+            : isLogin
+            ? "Sign In"
+            : "Sign Up"}
         </button>
       </div>
     </div>
