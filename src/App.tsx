@@ -8,6 +8,7 @@ import SignIn from "./pages/SignIn";
 import Alerts from "./pages/Alerts";
 import AboutUs from "./pages/AboutUs";
 import Footer from "./components/Footer";
+import Profile from "./pages/Profile";
 const App = () => {
   return (
     <BrowserRouter>
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/Signin" element={<SignIn/>} />
         <Route path="/alerts" element={<Alerts/>}/>
         <Route path="/about" element ={<AboutUs/>}/>
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer/>
     </main>
