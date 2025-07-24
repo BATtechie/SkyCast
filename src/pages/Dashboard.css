@@ -669,3 +669,133 @@ body {
   color: #ffcc70;
 }
 
+/* Clothing Recommendation Card */
+.clothing-recommendation-card {
+  background: rgba(24, 24, 24, 0.6); /* Matches other cards */
+  border-radius: 24px; /* Matches other cards */
+  padding: 32px; /* Adjusted padding to match weather-card */
+  margin-top: 32px; /* Consistent margin */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Matches other cards */
+  backdrop-filter: blur(20px); /* Matches other cards */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); /* Matches other cards */
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease; /* Add transition for hover effect */
+}
+
+.clothing-recommendation-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+
+.clothing-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 15px;
+}
+
+.clothing-header h3 {
+  margin: 0;
+  font-size: 1.6em;
+  color: #ffffff;
+}
+
+.clothing-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+  gap: 15px; /* Space between items */
+}
+
+.clothing-condition {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #9bb9eaff; /* Light blue for condition */
+}
+
+.clothing-temperature {
+  font-size: 1.1em;
+  color: #b0b0b0; /* Slightly lighter gray for temperature */
+}
+
+.clothing-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* Space between clothing tags */
+  margin-bottom: 30px;
+}
+
+.clothing-tag {
+  background-color: rgba(10, 10, 10, 0.5); /* Matching the hourly card and 5-day forecast inner elements */
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 0.95em;
+  white-space: nowrap; /* Prevent tags from breaking */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Consistent border */
+}
+
+.general-tips-section {
+  background: rgba(10, 10, 10, 0.5); /* Matching the hourly card and 5-day forecast inner elements */
+  border-radius: 16px; /* Adjusted to match other inner elements like hourly cards */
+  padding: 24px 20px; /* Adjusted padding to be more consistent */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Consistent border */
+}
+
+.general-tips-section h4 {
+  color: #ffffff;
+  font-size: 1.3em;
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.general-tips-section ul {
+  list-style: none; /* Remove default bullet points */
+  padding: 0;
+  margin: 0;
+}
+
+.general-tips-section ul li {
+  margin-bottom: 10px;
+  font-size: 1em;
+  color: #c0c0c0;
+  position: relative; /* For custom bullet */
+  padding-left: 25px; /* Space for custom bullet */
+}
+
+.general-tips-section ul li::before {
+  content: '•'; /* Custom bullet point */
+  color: #9bb9eaff; /* Color of the bullet */
+  font-size: 1.2em;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .clothing-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .clothing-temperature {
+    margin-top: 10px; /* Add space when stacked */
+  }
+
+  .clothing-recommendation-card {
+    padding: 24px; /* Adjust padding for smaller screens */
+  }
+}

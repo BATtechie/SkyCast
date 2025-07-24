@@ -110,13 +110,13 @@ h2 {
 }
 
 .password-input input {
-  padding-right: 44px; /* leave space for icon */
+  padding-right: 44px;
 }
 
 .eye-toggle {
   position: absolute;
   right: 12px;
-  top: 50%;
+  top: 65%;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -128,9 +128,8 @@ h2 {
   color: #888;
   cursor: pointer;
 }
-
-
-
+ 
+ 
 .eye-toggle:hover {
   color: #ccc;
 }

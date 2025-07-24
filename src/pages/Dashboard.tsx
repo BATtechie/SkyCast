@@ -69,37 +69,59 @@ const Dashboard = () => {
   const [error, setError] = useState<string | null>(null);
 
   const getClothingRecommendation = () => {
-    if (!weather) return null;
+    if (!weather)
+      return {
+        weatherCondition: "Unknown",
+        temperature: null,
+        items: [],
+        tips: [],
+      };
 
     const temp = Math.round(weather.main.feels_like);
     const desc = weather.weather[0].description.toLowerCase();
-    // const wind = weather.wind.speed;
+
+    let weatherCondition = "Mild Weather"; // Default
+    let items: string[] = [];
+    const tips: string[] = [
+      "Check the weather before leaving",
+      "Layer clothing for easy adjustment",
+      "Consider indoor/outdoor activities",
+      "Keep emergency items in your bag",
+    ];
 
     if (temp <= 5) {
-      return desc.includes("rain") || desc.includes("snow")
-        ? "🧥 Wear a heavy coat, boots & carry an umbrella."
-        : "🧥 It's freezing! Bundle up with a heavy coat.";
+      weatherCondition = "Cold Weather";
+      items =
+        desc.includes("rain") || desc.includes("snow")
+          ? ["Heavy coat", "Warm boots", "Umbrella", "Scarf", "Gloves"]
+          : ["Heavy coat", "Warm layers", "Scarf", "Gloves"];
+      tips.unshift("Dress in multiple layers to stay warm.");
+    } else if (temp > 5 && temp <= 15) {
+      weatherCondition = "Chilly Weather";
+      items = desc.includes("rain")
+        ? ["Light jacket", "Long pants", "Umbrella", "Sweater"]
+        : ["Light jacket", "Long or short pants", "Comfortable shoes"];
+      tips.unshift("A light jacket or sweater should suffice.");
+    } else if (temp > 15 && temp <= 25) {
+      weatherCondition = "Mild Weather";
+      items = desc.includes("rain")
+        ? ["T-shirt", "Light trousers/shorts", "Umbrella"]
+        : ["T-shirt", "Jeans or light trousers", "Light jacket (optional)"];
+      tips.unshift("Enjoy the pleasant weather!");
+    } else if (temp > 25) {
+      weatherCondition = "Hot Weather";
+      items = desc.includes("clear")
+        ? ["Breathable clothes", "Shorts", "T-shirt", "Hat", "Sunglasses"]
+        : ["Light clothes", "Hydration", "Sunscreen"];
+      tips.unshift("Stay hydrated and seek shade.");
     }
 
-    if (temp > 5 && temp <= 15) {
-      return desc.includes("rain")
-        ? "🌧️ Light jacket + umbrella suggested."
-        : "🧥 Chilly – wear a light jacket.";
-    }
-
-    if (temp > 15 && temp <= 25) {
-      return desc.includes("rain")
-        ? "🌦️ T-shirt is fine, but carry an umbrella."
-        : "👕 Pleasant weather – T-shirt & jeans recommended.";
-    }
-
-    if (temp > 25) {
-      return desc.includes("clear")
-        ? "☀️ Hot day – wear breathable clothes, drink water."
-        : "🔥 Stay cool – light clothes & hydration recommended.";
-    }
-
-    return "👚 Dress according to conditions.";
+    return {
+      weatherCondition,
+      temperature: temp,
+      items,
+      tips,
+    };
   };
 
   const fetchDefaultCity = async () => {
@@ -445,14 +467,46 @@ const Dashboard = () => {
         </div>
 
         {weather && (
-          <div className="clothing-recommendation">
-            <h3>
-              <span>
-                <Shirt style={{ color: "#9c8814ff" }} />
-              </span>{" "}
-              Clothing Recommendation
-            </h3>
-            <p>{getClothingRecommendation()}</p>
+          <div className="clothing-recommendation-card">
+            <div className="clothing-header">
+              <Shirt style={{ color: "#9bb9eaff", marginRight: "10px" }} />
+              <h3>What to Wear</h3>
+            </div>
+
+            <div className="clothing-summary">
+              <div className="clothing-condition">
+                {/* <Shirt
+                  style={{ color: "#9bb9eaff", marginRight: "10px" }}
+                />{" "} */}
+                {getClothingRecommendation().weatherCondition}
+              </div>
+              {getClothingRecommendation().temperature !== null && (
+                <div className="clothing-temperature">
+                  {getClothingRecommendation().weatherCondition === "Cold Weather" && "Freezing "}
+                  {getClothingRecommendation().weatherCondition === "Chilly Weather" && "Chilly "}
+                  {getClothingRecommendation().weatherCondition === "Mild Weather" && "Mild "}
+                  {getClothingRecommendation().weatherCondition === "Hot Weather" && "Hot "}
+    
+                </div>
+              )}
+            </div>
+
+            <div className="clothing-items">
+              {getClothingRecommendation().items.map((item, index) => (
+                <span key={index} className="clothing-tag">
+                  {item}
+                </span>
+              ))}
+            </div>
+
+            <div className="general-tips-section">
+              <h4>General Tips</h4>
+              <ul>
+                {getClothingRecommendation().tips.map((tip, index) => (
+                  <li key={index}>{tip}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 
