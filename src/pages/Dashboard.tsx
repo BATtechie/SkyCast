@@ -17,7 +17,8 @@ import {
   CalendarDaysIcon,
   Shirt,
 } from "lucide-react";
-// types.ts
+
+// (Your existing interfaces remain the same)
 export interface WeatherData {
   name: string;
   sys: { country: string };
@@ -126,9 +127,14 @@ const Dashboard = () => {
 
   const fetchDefaultCity = async () => {
     try {
-      const data = await fetchWeatherByCity("New Delhi");
+      // --- CHANGE START ---
+      const defaultCity = "New Delhi"; // Define your default city
+      const data = await fetchWeatherByCity(defaultCity); // Use defaultCity here
       setWeather(data);
       setError(null);
+
+      localStorage.setItem('lastSearchedCity', defaultCity); // <--- ADD THIS LINE: Save default city to localStorage
+      // --- CHANGE END ---
 
       const { lat, lon } = data.coord;
 
@@ -154,6 +160,9 @@ const Dashboard = () => {
       const data = await fetchWeatherByCity(city);
       setWeather(data);
 
+      // --- ADD THIS LINE ---
+      localStorage.setItem('lastSearchedCity', city); // Save the searched city to localStorage
+
       const { lat, lon } = data.coord;
 
       const [aqiData, uvData, hourlyData, fiveDayData] = await Promise.all([
@@ -167,15 +176,44 @@ const Dashboard = () => {
       setUvIndex(uvData);
       setHourlyForecast(hourlyData);
       setFiveDayForecast(fiveDayData);
+      setError(null); // Clear error on successful search
     } catch (err) {
       console.error(err);
+      setError("City not found. Please enter a valid city name."); // Set error if search fails
     }
   };
 
   // Inside Dashboard component
   useEffect(() => {
-    fetchDefaultCity();
-  }, []);
+    // --- CHANGE START ---
+    const lastCity = localStorage.getItem('lastSearchedCity');
+    if (lastCity) {
+      // If a city was previously searched, set it in the search input and fetch its data
+      setCity(lastCity);
+      fetchWeatherByCity(lastCity).then(data => {
+        setWeather(data);
+        const { lat, lon } = data.coord;
+        Promise.all([
+          fetchAQIByCoords(lat, lon),
+          fetchUVIndexByCoords(lat, lon),
+          fetchHourlyForecast(lat, lon),
+          fetchFiveDayForecast(lat, lon),
+        ]).then(([aqiData, uvData, hourlyData, fiveDayData]) => {
+          setAqi(aqiData);
+          setUvIndex(uvData);
+          setHourlyForecast(hourlyData);
+          setFiveDayForecast(fiveDayData);
+        }).catch(err => console.error("Error fetching data for saved city:", err));
+      }).catch(() => {
+        // If saved city data fetching fails (e.g., city not found anymore), fetch default
+        fetchDefaultCity();
+      });
+    } else {
+      // Otherwise, fetch the default city
+      fetchDefaultCity();
+    }
+    // --- CHANGE END ---
+  }, []); // Run once on mount
 
   return (
     <div className="dashboard-wrapper">
@@ -601,4 +639,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard; 

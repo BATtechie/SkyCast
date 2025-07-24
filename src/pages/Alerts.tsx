@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import {
-  // fetchWeatherAlerts,
-  fetchWeatherByCity, // We'll need current weather to check against thresholds
+  fetchWeatherByCity,
   fetchAQIByCoords,
   fetchUVIndexByCoords,
-} from "../services/weatherService"; // Ensure these services are available
+} from "../services/weatherService";
 import "./Alerts.css";
 import {
   Thermometer,
   Wind,
-  Cloudy, // Using Cloudy for AQI, could also use specific icon if available
+  Cloudy,
   Sun,
-  BellRing, // For the "Test Alert" button
-  ToggleLeft, // For disabled toggle
-  ToggleRight, // For enabled toggle
+  BellRing,
+  ToggleLeft,
+  ToggleRight,
+  X,
 } from "lucide-react";
 
 // Existing types from your Dashboard.tsx might be helpful
@@ -32,9 +32,7 @@ export interface WeatherData {
   coord: { lat: number; lon: number };
 }
 
-export interface AQIData {
-  // Define a proper interface for AQI if your service returns more than a number
-  // For now, assuming fetchAQIByCoords returns a number
+export interface AQIData { 
   main: { aqi: number };
   components: {
     co: number;
@@ -55,21 +53,25 @@ interface AlertSettings {
     threshold: number; // For temperature, let's use Celsius
     operator: "above" | "below" | "both"; // e.g., above 30C or below 0C
     showNotification: boolean; // To trigger temporary notification for testing
+    testMessage: string; // To store the test notification message
   };
   windSpeed: {
     enabled: boolean;
     threshold: number; // in km/h
     showNotification: boolean;
+    testMessage: string;
   };
   airQuality: {
     enabled: boolean;
     threshold: number; // AQI level (1-5)
     showNotification: boolean;
+    testMessage: string;
   };
   uvIndex: {
     enabled: boolean;
     threshold: number; // UV index number
     showNotification: boolean;
+    testMessage: string;
   };
 }
 
@@ -81,18 +83,19 @@ const Alerts = () => {
   const [currentUvIndex, setCurrentUvIndex] = useState<number | null>(null);
   const [localAlerts, setLocalAlerts] = useState<string[]>([]); // For triggered alerts
   const [error, setError] = useState<string | null>(null);
+  const [searchedCity, setSearchedCity] = useState<string>('Loading City...');
+  const [showNoAlertsMessage, setShowNoAlertsMessage] = useState(true);
 
   // Initialize alert settings with default thresholds and enabled status
-  const [alertSettings, setAlertSettings] = useState<AlertSettings>(() => {
-    // Load from localStorage or set defaults
+  const [alertSettings, setAlertSettings] = useState<AlertSettings>(() => { 
     const savedSettings = localStorage.getItem("alertSettings");
     return savedSettings
       ? JSON.parse(savedSettings)
       : {
-          temperature: { enabled: true, threshold: 30, operator: "above", showNotification: false },
-          windSpeed: { enabled: true, threshold: 40, showNotification: false },
-          airQuality: { enabled: true, threshold: 4, showNotification: false }, // AQI Level 4 or above
-          uvIndex: { enabled: true, threshold: 8, showNotification: false },
+          temperature: { enabled: true, threshold: 30, operator: "above", showNotification: false, testMessage: '' },
+          windSpeed: { enabled: true, threshold: 40, showNotification: false, testMessage: '' },
+          airQuality: { enabled: true, threshold: 4, showNotification: false, testMessage: '' }, // AQI Level 4 or above
+          uvIndex: { enabled: true, threshold: 8, showNotification: false, testMessage: '' },
         };
   });
 
@@ -101,12 +104,15 @@ const Alerts = () => {
     localStorage.setItem("alertSettings", JSON.stringify(alertSettings));
   }, [alertSettings]);
 
-  // Fetch current weather data
+  // Fetch current weather data for the searched city
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAlertDataForCity = async () => {
+      const lastCity = localStorage.getItem('lastSearchedCity');
+      const cityToFetch = lastCity || 'New Delhi'; // Use a default city if nothing is in localStorage
+      setSearchedCity(cityToFetch);
+
       try {
-        const city = "Sonipat"; // Or get from user's preferred location
-        const weatherData = await fetchWeatherByCity(city);
+        const weatherData = await fetchWeatherByCity(cityToFetch);
         setCurrentWeather(weatherData);
 
         const { lat, lon } = weatherData.coord;
@@ -115,17 +121,31 @@ const Alerts = () => {
 
         setCurrentAqi(aqiData);
         setCurrentUvIndex(uvData);
+        setError(null);
       } catch (err) {
-        console.error("Error fetching current weather data:", err);
-        setError("Could not load current weather data for alert checks.");
+        console.error(`Error fetching current weather data for ${cityToFetch}:`, err);
+        setError(`Could not load current weather data for alert checks for ${cityToFetch}. Please ensure the city name is valid.`);
+        setCurrentWeather(null);
+        setCurrentAqi(null);
+        setCurrentUvIndex(null);
       }
     };
-    fetchData();
 
-    // Set up interval to refetch data periodically (e.g., every 5 minutes)
-    const intervalId = setInterval(fetchData, 5 * 60 * 1000); // 5 minutes
-    return () => clearInterval(intervalId);
-  }, []); // Run once on mount
+    const handleStorageChange = () => {
+      fetchAlertDataForCity();
+    };
+
+    fetchAlertDataForCity();
+
+    const intervalId = setInterval(fetchAlertDataForCity, 5 * 60 * 1000);
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   // Function to check conditions and generate local alerts
   useEffect(() => {
@@ -134,18 +154,30 @@ const Alerts = () => {
     // Temperature Alert Check
     if (currentWeather && alertSettings.temperature.enabled) {
       const temp = Math.round(currentWeather.main.temp);
-      if (
-        (alertSettings.temperature.operator === "above" &&
-          temp >= alertSettings.temperature.threshold) ||
-        (alertSettings.temperature.operator === "below" &&
-          temp <= alertSettings.temperature.threshold) ||
-        (alertSettings.temperature.operator === "both" &&
-          (temp >= alertSettings.temperature.threshold || temp <= 0)) // Example for 'both'
-      ) {
+      const threshold = alertSettings.temperature.threshold;
+      const operator = alertSettings.temperature.operator;
+
+      let shouldAlert = false;
+      if (operator === "above" && temp >= threshold) {
+        shouldAlert = true;
+      } else if (operator === "below" && temp <= threshold) {
+        shouldAlert = true;
+      } else if (operator === "both") {
+        // Example for 'both': alert if extremely hot or extremely cold
+        // You might define separate high/low thresholds for 'both' mode
+        // For simplicity, let's say "above 35C" OR "below 0C"
+        const highThresholdForBoth = 35; // Example
+        const lowThresholdForBoth = 0;   // Example
+        if (temp >= highThresholdForBoth || temp <= lowThresholdForBoth) {
+          shouldAlert = true;
+        }
+      }
+
+      if (shouldAlert) {
         triggeredAlerts.push(
-          `Temperature Alert: Current temperature is ${temp}°C. Threshold: ${
-            alertSettings.temperature.operator === "above" ? "Above" : "Below"
-          } ${alertSettings.temperature.threshold}°C.`
+          `Temperature Alert: Current temperature in ${searchedCity} is ${temp}°C. Threshold: ${
+            operator === "above" ? "Above" : operator === "below" ? "Below" : "Extreme"
+          } ${threshold}°C.`
         );
       }
     }
@@ -155,7 +187,7 @@ const Alerts = () => {
       const wind = Math.round(currentWeather.wind.speed * 3.6); // Convert m/s to km/h
       if (wind >= alertSettings.windSpeed.threshold) {
         triggeredAlerts.push(
-          `Wind Speed Alert: Current wind speed is ${wind} km/h. Threshold: Above ${alertSettings.windSpeed.threshold} km/h.`
+          `Wind Speed Alert: Current wind speed in ${searchedCity} is ${wind} km/h. Threshold: Above ${alertSettings.windSpeed.threshold} km/h.`
         );
       }
     }
@@ -164,7 +196,7 @@ const Alerts = () => {
     if (currentAqi !== null && alertSettings.airQuality.enabled) {
       if (currentAqi >= alertSettings.airQuality.threshold) {
         triggeredAlerts.push(
-          `Air Quality Alert: Current AQI is ${currentAqi}. Threshold: AQI Level ${alertSettings.airQuality.threshold} or above.`
+          `Air Quality Alert: Current AQI in ${searchedCity} is ${currentAqi}. Threshold: AQI Level ${alertSettings.airQuality.threshold} or above.`
         );
       }
     }
@@ -173,34 +205,33 @@ const Alerts = () => {
     if (currentUvIndex !== null && alertSettings.uvIndex.enabled) {
       if (currentUvIndex >= alertSettings.uvIndex.threshold) {
         triggeredAlerts.push(
-          `UV Index Alert: Current UV Index is ${currentUvIndex}. Threshold: UV Index above ${alertSettings.uvIndex.threshold}.`
+          `UV Index Alert: Current UV Index in ${searchedCity} is ${currentUvIndex}. Threshold: UV Index above ${alertSettings.uvIndex.threshold}.`
         );
       }
-    }
-
-    // "Severe Weather" (always show if detected from OpenWeatherMap alerts)
-    // This is where you'd integrate real API alerts
-    // For demonstration, let's simulate a critical alert based on `alerts`
-    // (Note: your old `fetchWeatherAlerts` needs to be imported if you still use it)
-    /*
-    if (alerts.length > 0) { // Assuming `alerts` state from your old code
-      // Check for critical events like "storm", "hurricane", "tornado" etc.
-      const criticalEvents = alerts.filter(alert =>
-        alert.event.toLowerCase().includes('storm') ||
-        alert.event.toLowerCase().includes('hurricane') ||
-        alert.event.toLowerCase().includes('tornado') ||
-        alert.event.toLowerCase().includes('extreme')
-      );
-      if (criticalEvents.length > 0) {
-        criticalEvents.forEach(alert => {
-          triggeredAlerts.push(`CRITICAL: ${alert.event} - ${alert.description}`);
-        });
-      }
-    }
-    */
+    } 
 
     setLocalAlerts(triggeredAlerts);
-  }, [currentWeather, currentAqi, currentUvIndex, alertSettings]); // Re-run when these change
+  }, [currentWeather, currentAqi, currentUvIndex, alertSettings, searchedCity]);
+
+  // Handler for changing the temperature operator
+  const handleTemperatureOperatorChange = (
+    operator: "above" | "below" | "both"
+  ) => {
+    setAlertSettings((prevSettings) => ({
+      ...prevSettings,
+      temperature: {
+        ...prevSettings.temperature,
+        operator: operator,
+        // Optionally, reset threshold to a default sensible value for the new operator
+        threshold:
+          operator === "above"
+            ? 30 // Default for above
+            : operator === "below"
+            ? 0  // Default for below
+            : 35, // Default for both (e.g., high threshold)
+      },
+    }));
+  };
 
   const handleToggle = (alertType: keyof AlertSettings) => {
     setAlertSettings((prevSettings) => ({
@@ -226,12 +257,12 @@ const Alerts = () => {
   };
 
   const handleTestAlert = (alertType: keyof AlertSettings, message: string) => {
-   
-    setAlertSettings((prevSettings) => ({
+    setAlertSettings((prevSettings) => ({ 
       ...prevSettings,
       [alertType]: {
         ...prevSettings[alertType],
         showNotification: true,
+        testMessage: message,
       },
     }));
 
@@ -241,27 +272,35 @@ const Alerts = () => {
         [alertType]: {
           ...prevSettings[alertType],
           showNotification: false,
+          testMessage: '',
         },
       }));
-    }, 3000); // Notification visible for 3 seconds
+    }, 3000);
   };
 
-  // Helper for displaying temporary notifications
-  const Notification = ({ message, show }: { message: string; show: boolean }) => {
-    return show ? <div className="test-notification">{message}</div> : null;
+  const Notification = ({ message, show, onClose }: { message: string; show: boolean; onClose: () => void; }) => {
+    return show ? (
+      <div className="test-notification">
+        {message}
+        <button className="close-notification-button" onClick={onClose}>
+          <X size={16} />
+        </button>
+      </div>
+    ) : null;
   };
 
+  const handleCloseNoAlertsMessage = () => {
+    setShowNoAlertsMessage(false);
+  };
 
   return (
     <div className="alerts-container">
-      <h2>Alert Settings</h2>
+      <h2>Alert Settings for {searchedCity}</h2>
 
       {error && <div className="error-message">{error}</div>}
 
-      {/* Display active local alerts */}
-      {/* Display active local alerts */}
-      <div className="active-alerts-section"> {/* Removed conditional rendering here to always show the section */}
-        <h3>❗ Active Weather Alerts</h3>
+      <div className="active-alerts-section">
+        <h3>❗ Active Weather Alerts for {searchedCity}</h3>
         {localAlerts.length > 0 ? (
           localAlerts.map((alertMsg, index) => (
             <div key={index} className="active-alert-item">
@@ -269,9 +308,14 @@ const Alerts = () => {
             </div>
           ))
         ) : (
-          <div className="no-active-alerts-message">
-            No active alerts at the moment.
-          </div>
+          showNoAlertsMessage && (
+            <div className="no-active-alerts-message">
+              No active alerts at the moment for {searchedCity}.
+              <button className="close-no-alerts-message-button" onClick={handleCloseNoAlertsMessage}>
+                <X size={16} />
+              </button>
+            </div>
+          )
         )}
       </div>
 
@@ -285,19 +329,74 @@ const Alerts = () => {
           <p className="alert-description">
             Get notified when temperature reaches extreme levels
           </p>
+
+          {/* New UI for Operator Selection */}
+          <div className="alert-operator-selection">
+            <label>
+              <input
+                type="radio"
+                name="tempOperator"
+                value="above"
+                checked={alertSettings.temperature.operator === "above"}
+                onChange={() => handleTemperatureOperatorChange("above")}
+              />{" "}
+              Above
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="tempOperator"
+                value="below"
+                checked={alertSettings.temperature.operator === "below"}
+                onChange={() => handleTemperatureOperatorChange("below")}
+              />{" "}
+              Below
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="tempOperator"
+                value="both"
+                checked={alertSettings.temperature.operator === "both"}
+                onChange={() => handleTemperatureOperatorChange("both")}
+              />{" "}
+              Both (Hot & Cold)
+            </label>
+          </div>
+
           <div className="alert-threshold">
             Threshold:{" "}
-            <select
-              value={alertSettings.temperature.threshold}
-              onChange={(e) => handleThresholdChange("temperature", e.target.value)}
-            >
-              <option value={35}>Above 45°C</option>
-              <option value={30}>Above 30°C</option>
-              <option value={25}>Above 25°C</option>
-              <option value={0}>Below 0°C</option>
-              <option value={-5}>Below -5°C</option>
-              <option value={-10}>Below -10°C</option>
-            </select>
+            {/* Conditional options based on operator */}
+            {alertSettings.temperature.operator === "above" && (
+              <select
+                value={alertSettings.temperature.threshold}
+                onChange={(e) => handleThresholdChange("temperature", e.target.value)}
+              >
+                <option value={35}>35°C</option>
+                <option value={30}>30°C</option>
+                <option value={25}>25°C</option>
+              </select>
+            )}
+            {alertSettings.temperature.operator === "below" && (
+              <select
+                value={alertSettings.temperature.threshold}
+                onChange={(e) => handleThresholdChange("temperature", e.target.value)}
+              >
+                <option value={0}>0°C</option>
+                <option value={-5}>-5°C</option>
+                <option value={-10}>-10°C</option>
+              </select>
+            )}
+            {alertSettings.temperature.operator === "both" && (
+              <select
+                value={alertSettings.temperature.threshold} // In "both" mode, this threshold could mean the upper limit
+                onChange={(e) => handleThresholdChange("temperature", e.target.value)}
+              >
+                 <option value={35}>Hot: 35°C / Cold: 0°C</option>
+                 <option value={30}>Hot: 30°C / Cold: -5°C</option>
+              </select>
+              // You might need two separate inputs/thresholds for 'both' for full flexibility
+            )}
           </div>
 
           <div className="alert-actions">
@@ -311,18 +410,19 @@ const Alerts = () => {
             </div>
             <button
               className="test-alert-button"
-              onClick={() => handleTestAlert("temperature", "Temperature alert test notification!")}
+              onClick={() => handleTestAlert("temperature", `Temperature alert test notification for ${searchedCity}!`)}
             >
               <BellRing size={16} /> Test Alert
             </button>
           </div>
           <Notification
-            message="Temperature alert test notification!"
+            message={alertSettings.temperature.testMessage}
             show={alertSettings.temperature.showNotification}
+            onClose={() => setAlertSettings(prev => ({ ...prev, temperature: { ...prev.temperature, showNotification: false, testMessage: '' }}))}
           />
         </div>
 
-        {/* Wind Speed Alert Card */}
+        {/* Wind Speed Alert Card (no changes here, just for context) */}
         <div className="alert-card">
           <div className="alert-card-header">
             <Wind color="#60a5fa" size={28} />
@@ -355,18 +455,19 @@ const Alerts = () => {
             </div>
             <button
               className="test-alert-button"
-              onClick={() => handleTestAlert("windSpeed", "Wind speed alert test notification!")}
+              onClick={() => handleTestAlert("windSpeed", `Wind speed alert test notification for ${searchedCity}!`)}
             >
               <BellRing size={16} /> Test Alert
             </button>
           </div>
           <Notification
-            message="Wind speed alert test notification!"
+            message={alertSettings.windSpeed.testMessage}
             show={alertSettings.windSpeed.showNotification}
+            onClose={() => setAlertSettings(prev => ({ ...prev, windSpeed: { ...prev.windSpeed, showNotification: false, testMessage: '' }}))}
           />
         </div>
 
-        {/* Air Quality Alert Card */}
+        {/* Air Quality Alert Card (no changes here, just for context) */}
         <div className="alert-card">
           <div className="alert-card-header">
             <Cloudy color="#a78bfa" size={28} />
@@ -399,18 +500,19 @@ const Alerts = () => {
             </div>
             <button
               className="test-alert-button"
-              onClick={() => handleTestAlert("airQuality", "Air Quality alert test notification!")}
+              onClick={() => handleTestAlert("airQuality", `Air Quality alert test notification for ${searchedCity}!`)}
             >
               <BellRing size={16} /> Test Alert
             </button>
           </div>
           <Notification
-            message="Air Quality alert test notification!"
+            message={alertSettings.airQuality.testMessage}
             show={alertSettings.airQuality.showNotification}
+            onClose={() => setAlertSettings(prev => ({ ...prev, airQuality: { ...prev.airQuality, showNotification: false, testMessage: '' }}))}
           />
         </div>
 
-        {/* UV Index Alert Card */}
+        {/* UV Index Alert Card (no changes here, just for context) */}
         <div className="alert-card">
           <div className="alert-card-header">
             <Sun color="#facc15" size={28} />
@@ -442,14 +544,15 @@ const Alerts = () => {
             </div>
             <button
               className="test-alert-button"
-              onClick={() => handleTestAlert("uvIndex", "UV Index alert test notification!")}
+              onClick={() => handleTestAlert("uvIndex", `UV Index alert test notification for ${searchedCity}!`)}
             >
               <BellRing size={16} /> Test Alert
             </button>
           </div>
           <Notification
-            message="UV Index alert test notification!"
+            message={alertSettings.uvIndex.testMessage}
             show={alertSettings.uvIndex.showNotification}
+            onClose={() => setAlertSettings(prev => ({ ...prev, uvIndex: { ...prev.uvIndex, showNotification: false, testMessage: '' }}))}
           />
         </div>
       </div>
@@ -457,4 +560,4 @@ const Alerts = () => {
   );
 };
 
-export default Alerts; 
+export default Alerts;
