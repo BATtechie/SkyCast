@@ -102,22 +102,81 @@
 }
 
 /* ============ Responsive Layout ============ */
-@media (max-width: 768px) {
-  .maps-header h2 {
-    font-size: 20px;
-  }
+/* ============ Responsive Layout ============ */
 
+/* Tablets and below */
+@media (max-width: 1024px) {
+  .maps-container {
+    max-width: 100%;
+    padding: 0 12px;
+    gap: 20px;
+  }
+  .leaflet-container {
+    height: 450px;
+  }
+  .panel.weather-layers {
+    top: 16px;
+    right: 16px;
+    padding: 12px;
+  }
+}
+
+/* Mobile landscape and below */
+@media (max-width: 768px) {
+  .maps-header h2,
+  .map-heading {
+    font-size: 18px;
+  }
+  .maps-container {
+    padding: 0 6px;
+    gap: 14px;
+  }
+  .leaflet-container {
+    height: 300px;
+    border-radius: 10px;
+  }
   .panel.weather-layers {
     position: static;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 16px;
-    padding: 12px;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
   }
+  .panel.weather-layers button {
+    min-width: 90px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}
 
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .maps-header,
+  .map-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .maps-header h2,
+  .map-heading {
+    font-size: 15px;
+  }
   .leaflet-container {
-    height: 400px;
+    height: 180px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+  .panel.weather-layers {
+    padding: 4px;
+    gap: 4px;
+  }
+  .panel.weather-layers button {
+    min-width: 70px;
+    font-size: 11px;
+    padding: 4px 6px;
   }
 }

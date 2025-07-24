@@ -137,8 +137,8 @@ const Profile = () => {
               <ArrowLeft size={20} /> Back
             </button>
             <button className="logout-button-inline" onClick={handleLogout}>
-  <LogOut size={18} style={{ marginRight: "6px" }} /> Sign Out
-</button>
+              <LogOut size={18} style={{ marginRight: "6px" }} /> Sign Out
+            </button>
           </div>
         </div>
       </div>

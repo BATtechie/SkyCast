@@ -225,3 +225,54 @@
     justify-content: center;
   }
 }
+
+/* --- Responsive Profile Details --- */
+@media (max-width: 600px) {
+  .profile-details-card {
+    padding: 12px 4px;
+    border-radius: 10px;
+  }
+  .details-title {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+  .details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+    width: 100%;
+  }
+  .detail-item {
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+    background: none;
+    box-shadow: none;
+  }
+  .detail-label {
+    font-size: 0.98em;
+    color: #aaa;
+  }
+  .detail-value {
+    font-size: 1em;
+    word-break: break-all;
+  }
+  .profile-buttons {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .back-button,
+  .logout-button-inline {
+    width: 100%;
+    font-size: 1em;
+    padding: 10px 0;
+    justify-content: center;
+  }
+}

@@ -329,3 +329,110 @@
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
+/* --- Responsive Alerts Page --- */
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .alerts-container {
+    padding: 0 12px;
+  }
+  .alert-cards-grid {
+    gap: 18px;
+  }
+}
+
+/* Mobile landscape and below */
+@media (max-width: 768px) {
+  .alerts-container {
+    padding: 0 4px;
+  }
+  .alert-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .alert-card {
+    padding: 16px 10px;
+    border-radius: 14px;
+  }
+  .alert-card-header h3 {
+    font-size: 1.1em;
+  }
+  .alert-description {
+    font-size: 0.98em;
+  }
+  .alert-threshold select {
+    font-size: 0.98em;
+    padding: 6px 8px;
+  }
+  .alert-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .test-alert-button {
+    width: 100%;
+    font-size: 0.98em;
+    padding: 8px 0;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .alerts-container {
+    padding: 0 2px;
+  }
+  .alert-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .alert-card {
+    padding: 10px 4px;
+    border-radius: 10px;
+  }
+  .alert-card-header {
+    gap: 8px;
+  }
+  .alert-card-header h3 {
+    font-size: 1em;
+  }
+  .alert-description {
+    font-size: 0.95em;
+  }
+  .alert-operator-selection {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.95em;
+  }
+  .alert-threshold select {
+    font-size: 0.95em;
+    padding: 5px 6px;
+  }
+  .alert-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toggle-switch {
+    gap: 6px;
+  }
+  .test-alert-button {
+    width: 100%;
+    font-size: 0.95em;
+    padding: 7px 0;
+  }
+  .test-notification {
+    font-size: 0.95em;
+    padding: 8px 6px;
+    border-radius: 8px;
+  }
+  .no-active-alerts-message {
+    font-size: 0.95em;
+    padding: 8px 6px;
+    border-radius: 8px;
+  }
+}
+
+/* Make alert cards grid responsive if not already */
+.alert-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}

@@ -17,60 +17,78 @@ body {
   gap: 32px;
 }
 /* Search bar*/
-.search-bar {
+/* --- Dashboard Search Bar Responsive Styles --- */
+.dashboard-search-bar {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
   margin-bottom: 24px;
+}
+
+.dashboard-search-input {
+  flex: 1;
+  min-width: 0;
+  max-width: 350px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #18181b;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.dashboard-search-input::placeholder {
+  color: #aaa;
+  font-size: 15px;
+}
+
+.dashboard-search-input:focus {
+  border-color: #2563eb;
+  background: #23232b;
+}
+
+.dashboard-search-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.search-input {
-  width: 260px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(30, 30, 30, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-size: 15px;
-  outline: none;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+.dashboard-search-btn:hover {
+  background: #1d4ed8;
 }
 
-
-.search-input::placeholder {
-  color: #aaa;
-}
-
-.search-input:focus {
-  border-color: #ced5e0;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-} 
-
-.search-button {
-  padding: 12px 20px;
-  border-radius: 12px;
-  background: #4476c6;
-  color: white;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.search-button:hover {
-  background: #2563eb;
-}
-
+/* Mobile styles */
 @media (max-width: 600px) {
-  .search-bar {
-    flex-direction: column;
-    align-items: stretch;
+  .dashboard-search-bar {
+    flex-direction: row;
+    gap: 6px;
+    padding: 0 4px;
+    margin-bottom: 18px;
   }
-
-  .search-button {
-    width: 100%;
+  .dashboard-search-input {
+    font-size: 15px;
+    padding: 10px 12px;
+    max-width: 100%;
+    border-radius: 999px;
+  }
+  .dashboard-search-btn {
+    font-size: 17px;
+    padding: 10px 14px;
+    border-radius: 999px;
   }
 }
 
@@ -336,7 +354,6 @@ body {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
-
 .hour {
   font-size: 14px;
   font-weight: 500;
@@ -387,7 +404,6 @@ body {
               inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
 }
-
 
 .uv-header {
   display: flex;
@@ -517,12 +533,12 @@ body {
     flex-direction: column;
   }
   .hourly-scroll {
-  gap: 12px;
-}
-.uv-index-card,
-.hourly-forecast-card {
-  padding: 24px 20px;
-}
+    gap: 12px;
+  }
+  .uv-index-card,
+  .hourly-forecast-card {
+    padding: 24px 20px;
+  }
 }
 /* 7-Day Forecast Section */
 .seven-day-forecast-card {
@@ -691,7 +707,6 @@ body {
               inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-
 .clothing-header {
   display: flex;
   align-items: center;
@@ -797,5 +812,256 @@ body {
 
   .clothing-recommendation-card {
     padding: 24px; /* Adjust padding for smaller screens */
+  }
+}
+
+/* --- Extra Responsive Adjustments --- */
+
+/* Tablets and below */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    max-width: 100%;
+    padding: 0 12px;
+    gap: 20px;
+  }
+  .weather-card,
+  .uv-index-card,
+  .hourly-forecast-card,
+  .seven-day-forecast-card,
+  .clothing-recommendation-card {
+    padding: 20px;
+  }
+}
+
+/* Mobile landscape and below */
+@media (max-width: 768px) {
+  .dashboard-wrapper {
+    padding: 24px 0;
+  }
+  .dashboard-container {
+    padding: 0 6px;
+    gap: 14px;
+  }
+  .weather-card,
+  .uv-index-card,
+  .hourly-forecast-card,
+  .seven-day-forecast-card,
+  .clothing-recommendation-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+  .temperature {
+    font-size: 38px;
+  }
+  .weather-main {
+    gap: 4px;
+  }
+  .weather-bottom-section {
+    gap: 14px;
+  }
+  .forecast-day {
+    padding: 18px 10px;
+    gap: 8px;
+  }
+  .clothing-recommendation {
+    padding: 14px;
+    font-size: 14px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .dashboard-wrapper {
+    padding: 10px 0;
+  }
+  .dashboard-container {
+    padding: 0 2px;
+    gap: 8px;
+  }
+  .weather-card,
+  .uv-index-card,
+  .hourly-forecast-card,
+  .seven-day-forecast-card,
+  .clothing-recommendation-card {
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .temperature {
+    font-size: 28px;
+  }
+  .weather-main {
+    gap: 2px;
+  }
+  .weather-bottom-section {
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .forecast-day {
+    padding: 10px 4px;
+    gap: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .forecast-info-left,
+  .forecast-info-right,
+  .forecast-stats {
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+  .clothing-recommendation {
+    padding: 8px;
+    font-size: 13px;
+  }
+  .clothing-recommendation-card {
+    padding: 8px;
+  }
+  .clothing-header h3 {
+    font-size: 1.1em;
+  }
+  .clothing-summary {
+    gap: 8px;
+    font-size: 0.95em;
+  }
+  .clothing-tag {
+    padding: 6px 10px;
+    font-size: 0.85em;
+  }
+  .general-tips-section {
+    padding: 10px 6px;
+    font-size: 0.95em;
+  }
+}
+/* --- Enhanced Mobile Styles for Dashboard --- */
+@media (max-width: 480px) {
+  /* Stack cards vertically and remove side-by-side layout */
+  .weather-bottom-section {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  /* Make cards full width and reduce padding */
+  .uv-index-card,
+  .hourly-forecast-card,
+  .seven-day-forecast-card {
+    min-width: 0;
+    width: 100%;
+    padding: 8px 4px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  /* UV Index Card: Adjust font and layout */
+  .uv-index-card {
+    gap: 8px;
+  }
+  .uv-header {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+    gap: 2px;
+  }
+  .uv-value {
+    font-size: 32px;
+  }
+  .uv-label,
+  .uv-scale-labels {
+    font-size: 11px;
+  }
+  .uv-advice {
+    font-size: 11px;
+    padding: 8px;
+  }
+  .uv-levels {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .uv-level {
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  /* Hourly Forecast: Horizontal scroll, smaller cards */
+  .hourly-scroll {
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+  .hourly-card {
+    min-width: 80px;
+    padding: 10px 6px;
+    border-radius: 8px;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .hour {
+    font-size: 12px;
+  }
+  .hour-icon {
+    font-size: 18px;
+  }
+  .hour-temp {
+    font-size: 15px;
+  }
+  .hour-desc,
+  .hour-details {
+    font-size: 10px;
+  }
+
+  /* General: Reduce font and padding for all cards */
+  .weather-card,
+  .clothing-recommendation-card {
+    padding: 8px 4px;
+    border-radius: 10px;
+  }
+  .section-title {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+}
+/* --- Centered Weather Card for Mobile --- */
+@media (max-width: 600px) {
+  .weather-card {
+    align-items: center;
+    text-align: center;
+  }
+  .weather-card-header {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  .weather-main {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  .weather-stats {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  .weather-info {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
+  .weather-bottom {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+  }
+  .temp-range {
+    text-align: center;
+    width: 100%;
   }
 }

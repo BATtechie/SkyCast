@@ -219,21 +219,21 @@ const Dashboard = () => {
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
         {/* Search Bar */}
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="🔍 Search city..."
-            className="search-input"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
-          />
-          <button className="search-button" onClick={handleSearch}>
-            Search
-          </button>
-        </div>
+        <div className="dashboard-search-bar">
+  <input
+    type="text"
+    placeholder="Search city..."
+    className="dashboard-search-input"
+    value={city}
+    onChange={(e) => setCity(e.target.value)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") handleSearch();
+    }}
+  />
+  <button className="dashboard-search-btn" onClick={handleSearch}>
+    🔍
+  </button>
+</div>
 
         {error && (
           <div
