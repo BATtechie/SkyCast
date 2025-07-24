@@ -251,3 +251,81 @@
     grid-template-columns: 1fr; /* Stack on smaller screens */
   }
 }
+.alert-operator-selection {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
+  gap: 15px; /* Space between radio button groups */
+  font-size: 0.9em;
+  color: #555;
+}
+
+.alert-operator-selection label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.alert-operator-selection input[type="radio"] {
+  margin-right: 8px;
+  cursor: pointer;
+  transform: scale(1.1); /* Slightly larger radio buttons */
+}
+
+/* Styles for notification close button */
+.test-notification {
+  /* ... existing styles ... */
+  display: flex; /* Make it a flex container to align message and button */
+  align-items: center;
+  justify-content: space-between; /* Space out message and button */
+  gap: 15px; /* Space between message and button */
+}
+
+.close-notification-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5em; /* Larger cross icon */
+  cursor: pointer;
+  padding: 0 5px; /* Some padding around the cross */
+  line-height: 1; /* Ensure the cross is vertically centered */
+  transition: color 0.2s ease;
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.close-notification-button:hover {
+  color: #f00; /* Red on hover */
+}
+
+/* Styles for "No active alerts" message close button */
+.no-active-alerts-message {
+  /* ... existing styles ... */
+  display: flex;
+  justify-content: space-between; /* Pushes the button to the right */
+  align-items: center;
+  gap: 15px;
+}
+
+.close-no-alerts-message-button {
+  background: none;
+  border: none;
+  color: #a0a0a0; /* Match the text color */
+  font-size: 1em; /* Adjust size if needed */
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.close-no-alerts-message-button:hover {
+  color: #ef4444; /* Red on hover */
+}
+
+
+.alert-threshold select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
