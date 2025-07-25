@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 
-// Existing types from your Dashboard.tsx might be helpful
+
 export interface WeatherData {
   name: string;
   sys: { country: string };
@@ -46,30 +46,30 @@ export interface AQIData {
   };
 }
 
-// Define the structure for a user's alert settings
+
 interface AlertSettings {
   temperature: {
     enabled: boolean;
-    threshold: number; // For temperature, let's use Celsius
-    operator: "above" | "below" | "both"; // e.g., above 30C or below 0C
-    showNotification: boolean; // To trigger temporary notification for testing
-    testMessage: string; // To store the test notification message
+    threshold: number; 
+    operator: "above" | "below" | "both"; 
+    showNotification: boolean; 
+    testMessage: string; 
   };
   windSpeed: {
     enabled: boolean;
-    threshold: number; // in km/h
+    threshold: number; 
     showNotification: boolean;
     testMessage: string;
   };
   airQuality: {
     enabled: boolean;
-    threshold: number; // AQI level (1-5)
+    threshold: number;
     showNotification: boolean;
     testMessage: string;
   };
   uvIndex: {
     enabled: boolean;
-    threshold: number; // UV index number
+    threshold: number; 
     showNotification: boolean;
     testMessage: string;
   };
@@ -81,12 +81,12 @@ const Alerts = () => {
   );
   const [currentAqi, setCurrentAqi] = useState<number | null>(null);
   const [currentUvIndex, setCurrentUvIndex] = useState<number | null>(null);
-  const [localAlerts, setLocalAlerts] = useState<string[]>([]); // For triggered alerts
+  const [localAlerts, setLocalAlerts] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [searchedCity, setSearchedCity] = useState<string>('Loading City...');
   const [showNoAlertsMessage, setShowNoAlertsMessage] = useState(true);
 
-  // Initialize alert settings with default thresholds and enabled status
+
   const [alertSettings, setAlertSettings] = useState<AlertSettings>(() => { 
     const savedSettings = localStorage.getItem("alertSettings");
     return savedSettings
@@ -94,21 +94,21 @@ const Alerts = () => {
       : {
           temperature: { enabled: true, threshold: 30, operator: "above", showNotification: false, testMessage: '' },
           windSpeed: { enabled: true, threshold: 40, showNotification: false, testMessage: '' },
-          airQuality: { enabled: true, threshold: 4, showNotification: false, testMessage: '' }, // AQI Level 4 or above
+          airQuality: { enabled: true, threshold: 4, showNotification: false, testMessage: '' }, 
           uvIndex: { enabled: true, threshold: 8, showNotification: false, testMessage: '' },
         };
   });
 
-  // Save settings to localStorage whenever they change
+ 
   useEffect(() => {
     localStorage.setItem("alertSettings", JSON.stringify(alertSettings));
   }, [alertSettings]);
 
-  // Fetch current weather data for the searched city
+
   useEffect(() => {
     const fetchAlertDataForCity = async () => {
       const lastCity = localStorage.getItem('lastSearchedCity');
-      const cityToFetch = lastCity || 'New Delhi'; // Use a default city if nothing is in localStorage
+      const cityToFetch = lastCity || 'New Delhi'; 
       setSearchedCity(cityToFetch);
 
       try {
@@ -147,11 +147,11 @@ const Alerts = () => {
     };
   }, []);
 
-  // Function to check conditions and generate local alerts
+ 
   useEffect(() => {
     const triggeredAlerts: string[] = [];
 
-    // Temperature Alert Check
+  
     if (currentWeather && alertSettings.temperature.enabled) {
       const temp = Math.round(currentWeather.main.temp);
       const threshold = alertSettings.temperature.threshold;
@@ -163,11 +163,9 @@ const Alerts = () => {
       } else if (operator === "below" && temp <= threshold) {
         shouldAlert = true;
       } else if (operator === "both") {
-        // Example for 'both': alert if extremely hot or extremely cold
-        // You might define separate high/low thresholds for 'both' mode
-        // For simplicity, let's say "above 35C" OR "below 0C"
-        const highThresholdForBoth = 35; // Example
-        const lowThresholdForBoth = 0;   // Example
+        
+        const highThresholdForBoth = 35; 
+        const lowThresholdForBoth = 0;   
         if (temp >= highThresholdForBoth || temp <= lowThresholdForBoth) {
           shouldAlert = true;
         }
@@ -182,9 +180,9 @@ const Alerts = () => {
       }
     }
 
-    // Wind Speed Alert Check
+    
     if (currentWeather && alertSettings.windSpeed.enabled) {
-      const wind = Math.round(currentWeather.wind.speed * 3.6); // Convert m/s to km/h
+      const wind = Math.round(currentWeather.wind.speed * 3.6); 
       if (wind >= alertSettings.windSpeed.threshold) {
         triggeredAlerts.push(
           `Wind Speed Alert: Current wind speed in ${searchedCity} is ${wind} km/h. Threshold: Above ${alertSettings.windSpeed.threshold} km/h.`
@@ -192,7 +190,7 @@ const Alerts = () => {
       }
     }
 
-    // Air Quality Alert Check (assuming AQI 1-5, 5 being worst)
+    
     if (currentAqi !== null && alertSettings.airQuality.enabled) {
       if (currentAqi >= alertSettings.airQuality.threshold) {
         triggeredAlerts.push(
@@ -201,7 +199,7 @@ const Alerts = () => {
       }
     }
 
-    // UV Index Alert Check
+    
     if (currentUvIndex !== null && alertSettings.uvIndex.enabled) {
       if (currentUvIndex >= alertSettings.uvIndex.threshold) {
         triggeredAlerts.push(
@@ -213,7 +211,7 @@ const Alerts = () => {
     setLocalAlerts(triggeredAlerts);
   }, [currentWeather, currentAqi, currentUvIndex, alertSettings, searchedCity]);
 
-  // Handler for changing the temperature operator
+  
   const handleTemperatureOperatorChange = (
     operator: "above" | "below" | "both"
   ) => {
@@ -222,13 +220,13 @@ const Alerts = () => {
       temperature: {
         ...prevSettings.temperature,
         operator: operator,
-        // Optionally, reset threshold to a default sensible value for the new operator
+        
         threshold:
           operator === "above"
-            ? 30 // Default for above
+            ? 30 
             : operator === "below"
-            ? 0  // Default for below
-            : 35, // Default for both (e.g., high threshold)
+            ? 0
+            : 35,
       },
     }));
   };
@@ -320,7 +318,7 @@ const Alerts = () => {
       </div>
 
       <div className="alert-cards-grid">
-        {/* Temperature Alert Card */}
+
         <div className="alert-card">
           <div className="alert-card-header">
             <Thermometer color="#ef4444" size={28} />
@@ -330,7 +328,7 @@ const Alerts = () => {
             Get notified when temperature reaches extreme levels
           </p>
 
-          {/* New UI for Operator Selection */}
+
           <div className="alert-operator-selection">
             <label>
               <input
@@ -366,7 +364,7 @@ const Alerts = () => {
 
           <div className="alert-threshold">
             Threshold:{" "}
-            {/* Conditional options based on operator */}
+
             {alertSettings.temperature.operator === "above" && (
               <select
                 value={alertSettings.temperature.threshold}
@@ -389,13 +387,13 @@ const Alerts = () => {
             )}
             {alertSettings.temperature.operator === "both" && (
               <select
-                value={alertSettings.temperature.threshold} // In "both" mode, this threshold could mean the upper limit
+                value={alertSettings.temperature.threshold} 
                 onChange={(e) => handleThresholdChange("temperature", e.target.value)}
               >
                  <option value={35}>Hot: 35°C / Cold: 0°C</option>
                  <option value={30}>Hot: 30°C / Cold: -5°C</option>
               </select>
-              // You might need two separate inputs/thresholds for 'both' for full flexibility
+
             )}
           </div>
 
@@ -422,7 +420,7 @@ const Alerts = () => {
           />
         </div>
 
-        {/* Wind Speed Alert Card (no changes here, just for context) */}
+
         <div className="alert-card">
           <div className="alert-card-header">
             <Wind color="#60a5fa" size={28} />
@@ -467,7 +465,7 @@ const Alerts = () => {
           />
         </div>
 
-        {/* Air Quality Alert Card (no changes here, just for context) */}
+
         <div className="alert-card">
           <div className="alert-card-header">
             <Cloudy color="#a78bfa" size={28} />
@@ -512,7 +510,7 @@ const Alerts = () => {
           />
         </div>
 
-        {/* UV Index Alert Card (no changes here, just for context) */}
+
         <div className="alert-card">
           <div className="alert-card-header">
             <Sun color="#facc15" size={28} />

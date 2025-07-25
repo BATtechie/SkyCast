@@ -1,8 +1,4 @@
-/* body {
-  margin: 0;
-  background: #0d0d0d;
-  font-family: "Segoe UI", sans-serif;
-} */
+
 
 .signin-container {
   height: 100vh;
@@ -94,7 +90,7 @@ h2 {
 
 .form-group input {
   padding: 12px 15px;
-  padding-right: 44px; /* keep space for icon */
+  padding-right: 44px; 
   font-size: 14px;
   line-height: 1.4;
   background: #1c1c1c;

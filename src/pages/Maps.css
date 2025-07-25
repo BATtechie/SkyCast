@@ -1,4 +1,4 @@
-/* ============ Page Structure ============ */
+
 .maps-wrapper {
   background-color: #000;
   min-height: 100vh;
@@ -15,7 +15,7 @@
   position: relative;
 }
 
-/* ============ Header ============ */
+
 .maps-header {
   display: flex;
   align-items: center;
@@ -46,7 +46,7 @@
   box-shadow: 0 0 8px #22c55e;
 }
 
-/* ============ Leaflet Map ============ */
+
 .leaflet-container {
   width: 100%;
   height: 600px;
@@ -58,7 +58,7 @@
   z-index: 1;
 }
 
-/* ============ Weather Layer Panel ============ */
+
 .panel.weather-layers {
   position: absolute;
   top: 24px;
@@ -75,7 +75,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* ============ Weather Layer Buttons ============ */
+
 .panel.weather-layers button {
   background: rgba(20, 20, 20, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -101,10 +101,7 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* ============ Responsive Layout ============ */
-/* ============ Responsive Layout ============ */
-
-/* Tablets and below */
+ 
 @media (max-width: 1024px) {
   .maps-container {
     max-width: 100%;
@@ -121,7 +118,7 @@
   }
 }
 
-/* Mobile landscape and below */
+
 @media (max-width: 768px) {
   .maps-header h2,
   .map-heading {
@@ -153,7 +150,7 @@
   }
 }
 
-/* Small mobile devices */
+
 @media (max-width: 480px) {
   .maps-header,
   .map-heading {

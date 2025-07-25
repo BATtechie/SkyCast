@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { supabase } from "../supabaseClient"; // make sure this is correctly imported
+import { supabase } from "../supabaseClient"; 
 import "./Navbar.css";
 
 interface NavItem {
@@ -21,8 +21,7 @@ const Navbar = () => {
       setIsLoggedIn(!!session);
     };
 
-    checkSession();
-    // Optionally, add listener for future auth changes:
+    checkSession(); 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session);
     });

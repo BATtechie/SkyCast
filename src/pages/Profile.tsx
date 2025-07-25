@@ -1,4 +1,4 @@
-// src/components/Profile.tsx
+
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import { ArrowLeft, LogOut } from "lucide-react";

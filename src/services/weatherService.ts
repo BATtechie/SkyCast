@@ -1,12 +1,4 @@
-// // const API_KEY = "0ff9914403129255dcec384cb93fe671";
 
-// // export const fetchWeatherByCity = async (city: string) => {
-// //   const res = await fetch(
-// //     `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
-// //   );
-// //   if (!res.ok) throw new Error("City not found");
-// //   return await res.json();
-// // };
 const API_KEY = "0ff9914403129255dcec384cb93fe671";
 
 export const fetchWeatherByCity = async (city: string) => {
@@ -23,7 +15,7 @@ export const fetchAQIByCoords = async (lat: number, lon: number) => {
   );
   if (!res.ok) throw new Error("Failed to fetch AQI");
   const data = await res.json();
-  return data.list[0].main.aqi; // AQI is 1–5 scale
+  return data.list[0].main.aqi; 
 };
 export async function fetchWeatherAlerts(lat: number, lon: number) {
   try {
@@ -37,45 +29,19 @@ export async function fetchWeatherAlerts(lat: number, lon: number) {
     const data = await res.json();
     if (!data.alerts) {
       console.warn("No alerts in response:", data);
-      return []; // return empty array safely
+      return []; 
     }
 
     return data.alerts;
   } catch (error) {
     console.error("Error fetching alerts:", error);
-    return []; // fail gracefully
+    return [];
   }
 }
 
 
 
-// export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
-//   const res = await fetch(
-//     `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-//   );
-//   if (!res.ok) throw new Error("Failed to estimate UV Index");
-//   const data = await res.json();
 
-//   const hour = new Date().getHours();
-//   const cloudiness = data.clouds?.all || 0;
-
-//   // Estimate UV based on time of day and cloudiness
-//   let uv = 0;
-//   if (hour >= 10 && hour <= 15) {
-//     uv = 10 - cloudiness / 10;
-//     if (uv < 0) uv = 0;
-//   }
-
-//   return Math.round(uv);
-// }; 
-// export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
-//   const res = await fetch(
-//     `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-//   );
-//   if (!res.ok) throw new Error("Failed to fetch UV Index");
-//   const data = await res.json();
-//   return data.value; // UV index value
-// };
 
 export const fetchHourlyForecast = async (lat: number, lon: number) => {
   const res = await fetch(
@@ -83,7 +49,7 @@ export const fetchHourlyForecast = async (lat: number, lon: number) => {
   );
   if (!res.ok) throw new Error("Failed to fetch hourly forecast");
   const data = await res.json();
-  return data.list.slice(0, 8); // 3-hour steps → next 24 hours
+  return data.list.slice(0, 8); 
 };
 
 interface WeatherData {
@@ -111,14 +77,14 @@ export const fetchFiveDayForecast = async (lat: number, lon: number) => {
   
   const grouped: Record<string, WeatherData[]> = {};
   
-  // Group data by date
+
   for (const item of data.list) {
     const date = new Date(item.dt * 1000).toISOString().split("T")[0];
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(item);
   }
 
-  // Get the first 5 days
+
   const days = Object.keys(grouped).slice(0, 5);
 
   return days.map((day) => {
@@ -147,7 +113,7 @@ export const fetchUVIndexByCoords = async (lat: number, lon: number) => {
   if (!res.ok) throw new Error("Failed to fetch UV index");
   const data = await res.json();
 
-  const currentHour = new Date().toISOString().slice(0, 13); // e.g., "2025-07-16T14"
+  const currentHour = new Date().toISOString().slice(0, 13); 
   const uvIndexList = data?.hourly?.uv_index ?? [];
   const timeList = data?.hourly?.time ?? [];
 

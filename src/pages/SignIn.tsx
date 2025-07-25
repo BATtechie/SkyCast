@@ -26,7 +26,7 @@ useEffect(() => {
     } = await supabase.auth.getSession();
 
     if (session) {
-      navigate("/profile"); // or "/dashboard"
+      navigate("/profile"); 
     }
   };
 
@@ -54,7 +54,7 @@ useEffect(() => {
       if (error) {
         setAuthError(error.message);
       } else {
-        navigate("/dashboard"); // redirect on success
+        navigate("/dashboard"); 
       }
     } else {
       if (passwordMismatch || !isEmailValid) return;

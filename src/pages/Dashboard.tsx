@@ -16,9 +16,10 @@ import {
   MapPin,
   CalendarDaysIcon,
   Shirt,
+  Cloud,
 } from "lucide-react";
 
-// (Your existing interfaces remain the same)
+
 export interface WeatherData {
   name: string;
   sys: { country: string };
@@ -81,7 +82,7 @@ const Dashboard = () => {
     const temp = Math.round(weather.main.feels_like);
     const desc = weather.weather[0].description.toLowerCase();
 
-    let weatherCondition = "Mild Weather"; // Default
+    let weatherCondition = "Mild Weather"; 
     let items: string[] = [];
     const tips: string[] = [
       "Check the weather before leaving",
@@ -127,14 +128,13 @@ const Dashboard = () => {
 
   const fetchDefaultCity = async () => {
     try {
-      // --- CHANGE START ---
-      const defaultCity = "New Delhi"; // Define your default city
-      const data = await fetchWeatherByCity(defaultCity); // Use defaultCity here
+      
+      const defaultCity = "New Delhi"; 
+      const data = await fetchWeatherByCity(defaultCity); 
       setWeather(data);
       setError(null);
 
-      localStorage.setItem('lastSearchedCity', defaultCity); // <--- ADD THIS LINE: Save default city to localStorage
-      // --- CHANGE END ---
+      localStorage.setItem('lastSearchedCity', defaultCity);
 
       const { lat, lon } = data.coord;
 
@@ -160,8 +160,8 @@ const Dashboard = () => {
       const data = await fetchWeatherByCity(city);
       setWeather(data);
 
-      // --- ADD THIS LINE ---
-      localStorage.setItem('lastSearchedCity', city); // Save the searched city to localStorage
+      
+      localStorage.setItem('lastSearchedCity', city); 
 
       const { lat, lon } = data.coord;
 
@@ -176,19 +176,19 @@ const Dashboard = () => {
       setUvIndex(uvData);
       setHourlyForecast(hourlyData);
       setFiveDayForecast(fiveDayData);
-      setError(null); // Clear error on successful search
+      setError(null);
     } catch (err) {
       console.error(err);
-      setError("City not found. Please enter a valid city name."); // Set error if search fails
+      setError("City not found. Please enter a valid city name."); 
     }
   };
 
-  // Inside Dashboard component
+
   useEffect(() => {
-    // --- CHANGE START ---
+
     const lastCity = localStorage.getItem('lastSearchedCity');
     if (lastCity) {
-      // If a city was previously searched, set it in the search input and fetch its data
+      
       setCity(lastCity);
       fetchWeatherByCity(lastCity).then(data => {
         setWeather(data);
@@ -205,15 +205,15 @@ const Dashboard = () => {
           setFiveDayForecast(fiveDayData);
         }).catch(err => console.error("Error fetching data for saved city:", err));
       }).catch(() => {
-        // If saved city data fetching fails (e.g., city not found anymore), fetch default
+        
         fetchDefaultCity();
       });
     } else {
-      // Otherwise, fetch the default city
+     
       fetchDefaultCity();
     }
-    // --- CHANGE END ---
-  }, []); // Run once on mount
+   
+  }, []); 
 
   return (
     <div className="dashboard-wrapper">
@@ -264,7 +264,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Current Weather Card */}
+        
         {weather && (
           <div className="weather-card">
             <div className="weather-card-header">
@@ -352,7 +352,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Hourly Forecast Card */}
+       
         <div className="weather-bottom-section">
           <div className="hourly-forecast-card">
             <div className="section-title">🔴 Hourly Forecast</div>
@@ -401,10 +401,10 @@ const Dashboard = () => {
             )}
           </div>
 
-          {/* UV Index Card */}
+
           <div className="uv-index-card">
             <div className="uv-header">
-              <span>🌫️ Air Quality Index</span>
+              <span><Cloud/> Air Quality Index</span>
               <span
                 className="uv-badge"
                 style={{
