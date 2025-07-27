@@ -144,6 +144,8 @@
   background-position: right 8px center;
   background-size: 16px;
   padding-right: 30px; 
+  width: 100%;
+  max-width: 250px;
 }
 
 .alert-threshold select option {

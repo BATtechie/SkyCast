@@ -45,7 +45,7 @@ const AboutUs = () => {
             <Mail size={24} style={{color:"#ae3037ff"}}/>
             <span style={{color:"#ae3037ff"}}>Email</span>
           </a>
-          <a href="https://www.linkedin.com/in/your-profile" target="_blank" className="connect-icon">
+          <a href="https://www.linkedin.com/in/yuvraj-chandravansi-000733324/" target="_blank" className="connect-icon">
             <Linkedin size={24} style={{color:"#1b43e2ff"}}/>
             <span style={{color:"#1b43e2ff"}}>LinkedIn</span>
           </a>
