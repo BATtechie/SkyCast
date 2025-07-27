@@ -19,7 +19,6 @@ import {
   Cloud,
 } from "lucide-react";
 
-
 export interface WeatherData {
   name: string;
   sys: { country: string };
@@ -82,7 +81,7 @@ const Dashboard = () => {
     const temp = Math.round(weather.main.feels_like);
     const desc = weather.weather[0].description.toLowerCase();
 
-    let weatherCondition = "Mild Weather"; 
+    let weatherCondition = "Mild Weather";
     let items: string[] = [];
     const tips: string[] = [
       "Check the weather before leaving",
@@ -128,13 +127,12 @@ const Dashboard = () => {
 
   const fetchDefaultCity = async () => {
     try {
-      
-      const defaultCity = "New Delhi"; 
-      const data = await fetchWeatherByCity(defaultCity); 
+      const defaultCity = "New Delhi";
+      const data = await fetchWeatherByCity(defaultCity);
       setWeather(data);
       setError(null);
 
-      localStorage.setItem('lastSearchedCity', defaultCity);
+      localStorage.setItem("lastSearchedCity", defaultCity);
 
       const { lat, lon } = data.coord;
 
@@ -160,8 +158,7 @@ const Dashboard = () => {
       const data = await fetchWeatherByCity(city);
       setWeather(data);
 
-      
-      localStorage.setItem('lastSearchedCity', city); 
+      localStorage.setItem("lastSearchedCity", city);
 
       const { lat, lon } = data.coord;
 
@@ -179,61 +176,61 @@ const Dashboard = () => {
       setError(null);
     } catch (err) {
       console.error(err);
-      setError("City not found. Please enter a valid city name."); 
+      setError("City not found. Please enter a valid city name.");
     }
   };
 
-
   useEffect(() => {
-
-    const lastCity = localStorage.getItem('lastSearchedCity');
+    const lastCity = localStorage.getItem("lastSearchedCity");
     if (lastCity) {
-      
       setCity(lastCity);
-      fetchWeatherByCity(lastCity).then(data => {
-        setWeather(data);
-        const { lat, lon } = data.coord;
-        Promise.all([
-          fetchAQIByCoords(lat, lon),
-          fetchUVIndexByCoords(lat, lon),
-          fetchHourlyForecast(lat, lon),
-          fetchFiveDayForecast(lat, lon),
-        ]).then(([aqiData, uvData, hourlyData, fiveDayData]) => {
-          setAqi(aqiData);
-          setUvIndex(uvData);
-          setHourlyForecast(hourlyData);
-          setFiveDayForecast(fiveDayData);
-        }).catch(err => console.error("Error fetching data for saved city:", err));
-      }).catch(() => {
-        
-        fetchDefaultCity();
-      });
+      fetchWeatherByCity(lastCity)
+        .then((data) => {
+          setWeather(data);
+          const { lat, lon } = data.coord;
+          Promise.all([
+            fetchAQIByCoords(lat, lon),
+            fetchUVIndexByCoords(lat, lon),
+            fetchHourlyForecast(lat, lon),
+            fetchFiveDayForecast(lat, lon),
+          ])
+            .then(([aqiData, uvData, hourlyData, fiveDayData]) => {
+              setAqi(aqiData);
+              setUvIndex(uvData);
+              setHourlyForecast(hourlyData);
+              setFiveDayForecast(fiveDayData);
+            })
+            .catch((err) =>
+              console.error("Error fetching data for saved city:", err)
+            );
+        })
+        .catch(() => {
+          fetchDefaultCity();
+        });
     } else {
-     
       fetchDefaultCity();
     }
-   
-  }, []); 
+  }, []);
 
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
         {/* Search Bar */}
         <div className="dashboard-search-bar">
-  <input
-    type="text"
-    placeholder="Search city..."
-    className="dashboard-search-input"
-    value={city}
-    onChange={(e) => setCity(e.target.value)}
-    onKeyDown={(e) => {
-      if (e.key === "Enter") handleSearch();
-    }}
-  />
-  <button className="dashboard-search-btn" onClick={handleSearch}>
-    🔍
-  </button>
-</div>
+          <input
+            type="text"
+            placeholder="Search city..."
+            className="dashboard-search-input"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch();
+            }}
+          />
+          <button className="dashboard-search-btn" onClick={handleSearch}>
+            🔍
+          </button>
+        </div>
 
         {error && (
           <div
@@ -264,7 +261,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        
         {weather && (
           <div className="weather-card">
             <div className="weather-card-header">
@@ -352,7 +348,6 @@ const Dashboard = () => {
           </div>
         )}
 
-       
         <div className="weather-bottom-section">
           <div className="hourly-forecast-card">
             <div className="section-title">🔴 Hourly Forecast</div>
@@ -401,10 +396,11 @@ const Dashboard = () => {
             )}
           </div>
 
-
           <div className="uv-index-card">
             <div className="uv-header">
-              <span><Cloud/> Air Quality Index</span>
+              <span>
+                <Cloud /> Air Quality Index
+              </span>
               <span
                 className="uv-badge"
                 style={{
@@ -520,11 +516,14 @@ const Dashboard = () => {
               </div>
               {getClothingRecommendation().temperature !== null && (
                 <div className="clothing-temperature">
-                  {getClothingRecommendation().weatherCondition === "Cold Weather" && "Freezing "}
-                  {getClothingRecommendation().weatherCondition === "Chilly Weather" && "Chilly "}
-                  {getClothingRecommendation().weatherCondition === "Mild Weather" && "Mild "}
-                  {getClothingRecommendation().weatherCondition === "Hot Weather" && "Hot "}
-    
+                  {getClothingRecommendation().weatherCondition ===
+                    "Cold Weather" && "Freezing "}
+                  {getClothingRecommendation().weatherCondition ===
+                    "Chilly Weather" && "Chilly "}
+                  {getClothingRecommendation().weatherCondition ===
+                    "Mild Weather" && "Mild "}
+                  {getClothingRecommendation().weatherCondition ===
+                    "Hot Weather" && "Hot "}
                 </div>
               )}
             </div>
@@ -639,4 +638,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
