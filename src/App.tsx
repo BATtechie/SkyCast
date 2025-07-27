@@ -9,12 +9,14 @@ import Alerts from "./pages/Alerts";
 import AboutUs from "./pages/AboutUs";
 import Footer from "./components/Footer";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 const App = () => {
   return (
     <BrowserRouter>
     <main>
       <Navbar/>
       <Routes>
+          <Route path="*" element={<NotFound/>}/>
         <Route path="/" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/maps" element={<Maps />} />
